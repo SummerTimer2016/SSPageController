@@ -1,5 +1,5 @@
 use_frameworks!
-target 'SSPageController_Tests' do
+target 'SSPageController' do
   pod 'SSPageController', :path => '../'
   
   

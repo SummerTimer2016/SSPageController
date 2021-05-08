@@ -8,16 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
-		C450931C26462D38009B708D /* SSPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450931026462D37009B708D /* SSPageController.swift */; };
-		C450931D26462D38009B708D /* SSPageController+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450931126462D37009B708D /* SSPageController+Cache.swift */; };
-		C450931E26462D38009B708D /* SSPageControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450931226462D37009B708D /* SSPageControllerDelegate.swift */; };
-		C450931F26462D38009B708D /* SSPageControllerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450931326462D37009B708D /* SSPageControllerDataSource.swift */; };
-		C450932026462D38009B708D /* SSMagicScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450931526462D38009B708D /* SSMagicScrollView.swift */; };
-		C450932126462D38009B708D /* SSMagicScrollViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450931626462D38009B708D /* SSMagicScrollViewDelegate.swift */; };
-		C450932226462D38009B708D /* SSMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450931826462D38009B708D /* SSMenuView.swift */; };
-		C450932326462D38009B708D /* SSMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450931926462D38009B708D /* SSMenuItem.swift */; };
-		C450932426462D38009B708D /* SSMenuProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450931A26462D38009B708D /* SSMenuProgressView.swift */; };
-		C450932526462D38009B708D /* SSPageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C450931B26462D38009B708D /* SSPageScrollView.swift */; };
 		FAD1C9239363F409CA597642 /* Pods_SSPageController_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AABA72669F65678314382135 /* Pods_SSPageController_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,16 +21,6 @@
 		7FBA740A863E9539348A8952 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		AABA72669F65678314382135 /* Pods_SSPageController_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SSPageController_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADCAE470D988F0D488D232D9 /* SSPageController.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SSPageController.podspec; path = ../SSPageController.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		C450931026462D37009B708D /* SSPageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSPageController.swift; sourceTree = "<group>"; };
-		C450931126462D37009B708D /* SSPageController+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SSPageController+Cache.swift"; sourceTree = "<group>"; };
-		C450931226462D37009B708D /* SSPageControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSPageControllerDelegate.swift; sourceTree = "<group>"; };
-		C450931326462D37009B708D /* SSPageControllerDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSPageControllerDataSource.swift; sourceTree = "<group>"; };
-		C450931526462D38009B708D /* SSMagicScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSMagicScrollView.swift; sourceTree = "<group>"; };
-		C450931626462D38009B708D /* SSMagicScrollViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSMagicScrollViewDelegate.swift; sourceTree = "<group>"; };
-		C450931826462D38009B708D /* SSMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSMenuView.swift; sourceTree = "<group>"; };
-		C450931926462D38009B708D /* SSMenuItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSMenuItem.swift; sourceTree = "<group>"; };
-		C450931A26462D38009B708D /* SSMenuProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSMenuProgressView.swift; sourceTree = "<group>"; };
-		C450931B26462D38009B708D /* SSPageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSPageScrollView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,7 +55,6 @@
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
-				C450930E26462D1B009B708D /* Sourse */,
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
@@ -117,47 +96,6 @@
 				57F623CF7F6956CA0C304BBC /* LICENSE */,
 			);
 			name = "Podspec Metadata";
-			sourceTree = "<group>";
-		};
-		C450930E26462D1B009B708D /* Sourse */ = {
-			isa = PBXGroup;
-			children = (
-				C450931726462D38009B708D /* SSMenuView */,
-				C450930F26462D37009B708D /* SSPageController */,
-				C450931426462D38009B708D /* SSStickyPageController */,
-			);
-			path = Sourse;
-			sourceTree = "<group>";
-		};
-		C450930F26462D37009B708D /* SSPageController */ = {
-			isa = PBXGroup;
-			children = (
-				C450931026462D37009B708D /* SSPageController.swift */,
-				C450931126462D37009B708D /* SSPageController+Cache.swift */,
-				C450931226462D37009B708D /* SSPageControllerDelegate.swift */,
-				C450931326462D37009B708D /* SSPageControllerDataSource.swift */,
-			);
-			path = SSPageController;
-			sourceTree = "<group>";
-		};
-		C450931426462D38009B708D /* SSStickyPageController */ = {
-			isa = PBXGroup;
-			children = (
-				C450931526462D38009B708D /* SSMagicScrollView.swift */,
-				C450931626462D38009B708D /* SSMagicScrollViewDelegate.swift */,
-			);
-			path = SSStickyPageController;
-			sourceTree = "<group>";
-		};
-		C450931726462D38009B708D /* SSMenuView */ = {
-			isa = PBXGroup;
-			children = (
-				C450931826462D38009B708D /* SSMenuView.swift */,
-				C450931926462D38009B708D /* SSMenuItem.swift */,
-				C450931A26462D38009B708D /* SSMenuProgressView.swift */,
-				C450931B26462D38009B708D /* SSPageScrollView.swift */,
-			);
-			path = SSMenuView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -276,17 +214,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C450931D26462D38009B708D /* SSPageController+Cache.swift in Sources */,
-				C450932226462D38009B708D /* SSMenuView.swift in Sources */,
-				C450932126462D38009B708D /* SSMagicScrollViewDelegate.swift in Sources */,
-				C450932026462D38009B708D /* SSMagicScrollView.swift in Sources */,
-				C450931F26462D38009B708D /* SSPageControllerDataSource.swift in Sources */,
-				C450931C26462D38009B708D /* SSPageController.swift in Sources */,
-				C450932326462D38009B708D /* SSMenuItem.swift in Sources */,
-				C450932526462D38009B708D /* SSPageScrollView.swift in Sources */,
 				607FACEC1AFB9204008FA782 /* Tests.swift in Sources */,
-				C450932426462D38009B708D /* SSMenuProgressView.swift in Sources */,
-				C450931E26462D38009B708D /* SSPageControllerDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

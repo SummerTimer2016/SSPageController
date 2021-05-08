@@ -17,9 +17,9 @@ Pod::Spec.new do |s|
 #   * Write the description between the DESC delimiters below.
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
-  s.description      = <<-DESC
-  Modified based on WMPageController of SSPageController.
-                       DESC
+#  s.description      = <<-DESC
+#  Modified based on WMPageController of SSPageController.
+#                       DESC
 
   s.homepage         = 'https://github.com/SummerTimer2016/SSPageController'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
@@ -28,10 +28,9 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/SummerTimer2016/SSPageController.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '9.0'
-
-  s.source_files = 'SSPageController/Sourse/**/*'
-  
+  s.ios.deployment_target = '10.0'
+  s.platform     = :ios, "10.0"
+  s.source_files = 'SSPageController/Classes/Sourse/**/*'
   # s.resource_bundles = {
   #   'SSPageController' => ['SSPageController/Assets/*.png']
   # }
