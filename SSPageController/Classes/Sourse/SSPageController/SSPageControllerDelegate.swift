@@ -5,12 +5,8 @@
 //  Created by Shine on 2020/2/18.
 //  Copyright © 2020 Shine. All rights reserved.
 //
-
-
-
-
+import UIKit
 import Foundation
-
 @objc protocol SSPageControllerDelegate: NSObjectProtocol {
     /**
      *  If the child controller is heavy, put some work in this method. This method will only be called when the controller is initialized and stop scrolling. (That means if the controller is cached and hasn't released will never call this method.)
@@ -52,4 +48,9 @@ import Foundation
      再次点击menuview同一按钮回调，主要用于是否刷新列表
      */
     @objc optional func pageController(_ pageController: SSPageController, didClickIndexAgainWithIndex index: Int)
+    
+    /*
+     页面点击item 触发事件
+     */
+    @objc optional func pageController(_ pageController: SSPageController, didSelesctedIndex index: Int, currentIndex: Int)
 }

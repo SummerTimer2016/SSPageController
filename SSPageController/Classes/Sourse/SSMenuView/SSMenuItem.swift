@@ -41,6 +41,7 @@ class SSMenuItem: UILabel {
     var selectedSize: CGFloat = 15.0
     
     
+    
     var rate: CGFloat = 0 {
         didSet {
             guard rate >= 0.0 || rate <= 1.0 else {
@@ -84,16 +85,33 @@ class SSMenuItem: UILabel {
     
     var strokeWidth:CGFloat = 0
     
+    public var rightViewImage:UIImage? {
+        willSet {
+            if let image = newValue {
+                rightView.frame = CGRect(x: self.frame.size.width - image.size.width,
+                                         y: (self.frame.size.height - image.size.height) / 2,
+                                         width: image.size.width,
+                                         height: image.size.height)
+            }
+        }
+        
+    }
+    
     weak var delegate: SSMenuItemDelegate?
     
     weak var link: CADisplayLink?
     
     //对外只读，对内可读写
-    private var selected: Bool = false
+    private(set) var selected: Bool = false
     
     lazy var tapGesture: UITapGestureRecognizer = {
         let tapGes = UITapGestureRecognizer(target: self, action: #selector(touchUpInside(_:)))
         return tapGes
+    }()
+    
+    private var rightView:UIImageView = {
+       let item = UIImageView()
+        return item
     }()
     
     override init(frame: CGRect) {
@@ -122,6 +140,7 @@ extension SSMenuItem {
         self.isUserInteractionEnabled = true
         self.addGestureRecognizer(tapGesture)
         self.strokeWidth = 0
+        self.addSubview(self.rightView)
     }
     
     @objc func touchUpInside(_ tap: UITapGestureRecognizer) {

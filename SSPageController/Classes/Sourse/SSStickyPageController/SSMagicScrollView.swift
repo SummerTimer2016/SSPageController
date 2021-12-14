@@ -1,14 +1,30 @@
 //
 //  SSMagicScrollView.swift
-//  JYLMOperation
+//  JYLMDirver
 //
 //  Created by Summer on 2021/4/27.
 //
 
 import UIKit
+import Foundation
 
-private class MXScrollViewDelegateForwarder: NSObject, SSMagicScrollViewDelegate {
+private class MXScrollViewDelegateForwarder: NSObject,SSMagicScrollViewDelegate {
     weak var delegate: SSMagicScrollViewDelegate?
+    
+    override func responds(to selector: Selector!) -> Bool {
+        return delegate?.responds(to: selector) ?? false || super.responds(to: selector)
+    }
+//
+//    func forwardInvocation(_ invocation: NSInvocation) {
+//        invocation.invoke(withTarget: delegate)
+//    }
+    // MARK: <UIScrollViewDelegate>
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        (scrollView as? SSMagicScrollView)?.scrollViewDidEndDecelerating(scrollView)
+        if ((delegate?.responds(to: #function)) != nil) {
+            delegate?.scrollViewDidEndDecelerating?(scrollView)
+        }
+    }
 }
 
 class SSMagicScrollView: UIScrollView {
@@ -16,8 +32,10 @@ class SSMagicScrollView: UIScrollView {
     var minimumHeaderViewHeight: CGFloat = 0.0
     ///头部滑动视图最大高度
     var maximumHeaderViewHeight: CGFloat = 0.0
+
+    // MARK:-------- Properties get&set ---------
     /// Delegate instance that adopt the MXScrollViewDelegate.
-    dynamic weak var myDelegate: SSMagicScrollViewDelegate? {
+    public  weak var delegateMS: SSMagicScrollViewDelegate? {
         set {
             self.forwarder?.delegate = newValue
             // Scroll view delegate caches whether the delegate responds to some of the delegate
@@ -25,7 +43,6 @@ class SSMagicScrollView: UIScrollView {
             super.delegate = nil;
             super.delegate = self.forwarder;
         }
-        
         get {
             return self.forwarder?.delegate
         }
@@ -34,7 +51,9 @@ class SSMagicScrollView: UIScrollView {
     ///滑动页面回调
     private var forwarder: MXScrollViewDelegateForwarder?
     ///监听当前滑动视图数量，并存放到数组内
-    private var observedViews: [UIScrollView]?
+    private lazy var observedViews: [UIScrollView] = {
+       return [UIScrollView]()
+    }()
     ///是否监听中
     private var isObserving = false
     ///是否锁定中（锁定中监听）
@@ -50,12 +69,19 @@ class SSMagicScrollView: UIScrollView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    deinit {
+        self.removeObserver(self,
+                            forKeyPath: NSStringFromSelector(#selector(getter: contentOffset)),
+                            context: &kMXScrollViewKVOContext)
+        self.removeObservedViews()
+    }
 }
+
 extension SSMagicScrollView {
     private func initialize() {
         self.forwarder = MXScrollViewDelegateForwarder()
         super.delegate = forwarder
-        
         showsVerticalScrollIndicator = false
         isDirectionalLockEnabled = true
         bounces = true
@@ -65,19 +91,137 @@ extension SSMagicScrollView {
         }
         
         panGestureRecognizer.cancelsTouchesInView = false
-        
-        observedViews = [UIScrollView]()
-        addObserver(self, forKeyPath: "contentOffset", options: [.new,.old], context: &kMXScrollViewKVOContext)
+        addObserver(self, forKeyPath: NSStringFromSelector(#selector(getter: contentOffset)), options: [.new,.old], context: &kMXScrollViewKVOContext)
         isObserving = true
     }
+    
+    private func GetClassFromString(_ classString: String) -> AnyClass? {
+        guard let bundleName: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String else {
+            return nil
+        }
+        var anyClass: AnyClass? = NSClassFromString(bundleName + "." + classString)
+        if (anyClass == nil) {
+            anyClass = NSClassFromString(classString)
+        }
+        return anyClass
+    }
+}
+// MARK: KVO
+extension SSMagicScrollView {
+    ///添加Observer监听
+    private func addObserver(to scrollView: UIScrollView?) {
+        lock = ((scrollView?.contentOffset.y ?? 0.0) > -(scrollView?.contentInset.top ?? 0.0))
+        scrollView?.addObserver(
+            self,
+            forKeyPath: NSStringFromSelector(#selector(getter: contentOffset)),
+            options: [.old, .new],
+            context: &kMXScrollViewKVOContext)
+    }
+    ///移除Observer监听
+    private func removeObserver(from scrollView: UIScrollView?) {
+        scrollView?.removeObserver(
+            self,
+            forKeyPath: NSStringFromSelector(#selector(getter: contentOffset)),
+            context: &kMXScrollViewKVOContext)
+    }
+}
+
+// MARK:-------- observe ---------
+extension SSMagicScrollView {
+    //This is where the magic happens...
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if context == &kMXScrollViewKVOContext
+            && (keyPath == NSStringFromSelector(#selector(getter: contentOffset))) {
+            guard let changeValue = change else {return}
+            guard let objectValue = object else {return}
+            guard let new = changeValue[NSKeyValueChangeKey.newKey] as? CGPoint else {return}
+            guard let old = changeValue[NSKeyValueChangeKey.oldKey] as? CGPoint else {return}
+            
+            let diff = old.y - new.y
+            if (diff == 0) || !isObserving {return}
+            
+            let maximumContentOffsetY = maximumHeaderViewHeight - minimumHeaderViewHeight
+            if objectValue is SSMagicScrollView {
+                //Adjust self scroll offset when scroll down
+                if (diff > 0 && lock) {
+                    self.scrollView(self, setContentOffset: old)
+                }else if contentOffset.y < -contentInset.top && !bounces {
+                    self.scrollView(self, setContentOffset: CGPoint(x: contentOffset.x, y: -contentInset.top))
+                } else if contentOffset.y > maximumContentOffsetY {
+                    self.scrollView(self, setContentOffset: CGPoint(x: contentOffset.x, y: maximumContentOffsetY))
+                } else {}
+                
+            }else {
+                //Adjust the observed scrollview's content offset
+                if let scrollView = (object as? UIScrollView) {
+                    lock = ((scrollView.contentOffset.y) > -(scrollView.contentInset.top))
+                    //Manage scroll up
+                    if contentOffset.y < maximumContentOffsetY && lock && diff < 0 {
+                        self.scrollView(scrollView, setContentOffset: old)
+                    }
+                    if !lock && ((contentOffset.y > -contentInset.top) || bounces) {
+                        self.scrollView(scrollView, setContentOffset: CGPoint(x: scrollView.contentOffset.x, y: -scrollView.contentInset.top))
+                    }
+                }
+                
+            }
+        }
+        else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
+    }
+    
+    
+}
+
+// MARK:-------- Scrolling views handlers ---------
+extension SSMagicScrollView {
+    ///添加监听视图
+    private func addObservedView(_ scrollView: UIScrollView?) {
+        if let scrollView = scrollView {
+            if !observedViews.contains(scrollView) {
+                observedViews.append(scrollView)
+                addObserver(to: scrollView)
+            }
+        }
+    }
+    ///移除监听视图
+    private func removeObservedViews() {
+        for scrollView in observedViews {
+            removeObserver(from: scrollView)
+        }
+        observedViews.removeAll()
+    }
+    ///设定当前页面滑动
+    private func scrollView(_ scrollView: UIScrollView?, setContentOffset offset: CGPoint) {
+        isObserving = false
+        scrollView?.contentOffset = offset
+        isObserving = true
+    }
+}
+// MARK:-------- UIScrollViewDelegate ---------
+extension SSMagicScrollView:UIScrollViewDelegate {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        lock = false
+        removeObservedViews()
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            lock = false
+            removeObservedViews()
+        }
+    }
+}
+
+extension SSMagicScrollView: UIGestureRecognizerDelegate {
     // MARK: ---- UIGestureRecognizerDelegate ----
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if otherGestureRecognizer.view == self {
             return false
         }
-        
         // Ignore other gesture than pan
-        if !(gestureRecognizer is UIPanGestureRecognizer) {
+        if !(gestureRecognizer.isKind(of: UIPanGestureRecognizer.self)) {
             return false
         }
         
@@ -87,24 +231,23 @@ extension SSMagicScrollView {
             return false
         }
         
-        if !(otherGestureRecognizer.view is UIScrollView) {
+        if !(otherGestureRecognizer.view?.isKind(of: UIScrollView.self) ?? false) {
             return false
         }
-        
         let scrollView = otherGestureRecognizer.view as? UIScrollView
-        
         // Tricky case: UITableViewWrapperView
-        if scrollView?.superview is UITableView {
+        if (scrollView?.superview?.isKind(of: UITableView.self) ?? false) {
             return false
         }
-        //        if scrollView.superview is (NSClassFromString("UITableViewCellContentView")) {
-        //            return false
-        //        }
-        
+        //tableview on the MXScrollView
+        if let className = GetClassFromString("UITableViewCellContentView"),
+           (scrollView?.superview?.isKind(of: className) ?? false) {
+            return false
+        }
         var shouldScroll = true
         
-        if let delegateNil = self.myDelegate {
-            shouldScroll = delegateNil.scrollView(self, shouldScrollWithSubview: scrollView)
+        if let delegateNil = self.delegateMS {
+            shouldScroll = delegateNil.scrollView(self, shouldScrollWithSubview: scrollView ?? UIScrollView())
         }
         
         if shouldScroll {
@@ -113,23 +256,4 @@ extension SSMagicScrollView {
         
         return shouldScroll
     }
-    // MARK: KVO
-    private func addObserver(to scrollView: UIScrollView?) {
-        lock = ((scrollView?.contentOffset.y ?? 0.0) > -(scrollView?.contentInset.top ?? 0.0))
-        scrollView?.addObserver(
-            self,
-            forKeyPath: "contentOffset",
-            options: [.old, .new],
-            context: &kMXScrollViewKVOContext)
-    }
-    private func removeObserver(from scrollView: UIScrollView?) {
-        scrollView?.removeObserver(
-            self,
-            forKeyPath: "contentOffset",
-            context: &kMXScrollViewKVOContext)
-    }
-}
-
-extension SSMagicScrollView: UIGestureRecognizerDelegate {
-    
 }

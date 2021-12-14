@@ -20,7 +20,7 @@ enum SSMenuViewStyle {
     case styleFloodHollow // 涌入效果 (空心的)
     case styleSegmented // 涌入带边框,即网易新闻选项卡
     case styleCustomSegmented //自定义Segment样式
-//    case styleImage   // 带下划线为图片
+    case styleImage   // 带下划线为图片
 }
 
 // 原先基础上添加了几个方便布局的枚举，更多布局格式可以通过设置 `itemsMargins` 属性来自定义
@@ -107,8 +107,10 @@ class SSMenuView: UIView {
             let defaultHeight: Float = Float(self.frame.size.height * 0.8)
             
             return progressHeight == SSUNDEFINED_VALUE ? CGFloat(ceilf(defaultHeight)) : progressHeight
+        case  .styleImage:
+            return (self.progressImage?.size.height ?? 0.0);
         default:
-            return progressHeight;
+            return progressHeight
         }
     }
     
@@ -271,7 +273,7 @@ private extension SSMenuView {
             let itemW: CGFloat = self.delegate?.menuView(self, widthForItemAtIndex: i) ?? 60.0
             let frame = CGRect(x: contentWidth, y: 0, width: itemW, height: self.frame.size.height)
             self.frames.append(frame)
-            contentWidth += itemW + itemMarginAtIndex(i+1)
+            contentWidth += itemW + itemMarginAtIndex(i + 1)
         }
         
         guard let scrollView = self.scrollView else { return  }
@@ -372,8 +374,8 @@ private extension SSMenuView {
              .styleSegmented,
              .styleFlood:
             return CGRect(x: 0, y: (self.frame.size.height - self.progressHeightValue) / 2, width: scrollView.contentSize.width, height: self.progressHeightValue)
-//        case .styleImage:
-//            return CGRect(x: 0, y: self.frame.size.height - self.progressHeightValue - self.progressViewBottomSpace, width: scrollView.contentSize.width, height: self.progressHeightValue)
+        case .styleImage:
+            return CGRect(x: 0, y: self.frame.size.height - self.progressHeightValue - self.progressViewBottomSpace, width: scrollView.contentSize.width, height: self.progressHeightValue)
         }
     }
     

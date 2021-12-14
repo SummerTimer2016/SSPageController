@@ -146,6 +146,7 @@ class SSMenuProgressView: UIView {
         if let progressImage = self.progressImage {
             if let cgImage = progressImage.cgImage {
                 ctx?.draw(cgImage, in: barframe)
+                ctx?.setFillColor(UIColor.white.cgColor)
             }else {
                 ctx?.setFillColor(UIColor.black.cgColor)
                 ctx?.fillPath()

@@ -24,7 +24,7 @@ extension NSNotification.Name {
 let kSSUndefinedIndex: Int = -1;
 let kSSControllerCountUndefined: Int = -1;
 
-class SSPageController: JYLMBaseViewController {
+class SSPageController: UIViewController {
     
     //MARK:可设置属性
     weak var delegate: SSPageControllerDelegate?
@@ -174,7 +174,7 @@ class SSPageController: JYLMBaseViewController {
      */
     var progressColor: UIColor? {
         willSet {
-            self.menuView?.adjustLineColor(progressColor)
+            self.menuView?.adjustLineColor(newValue)
         }
     }
     
@@ -990,6 +990,10 @@ extension SSPageController: SSMenuViewDataSource, SSMenuViewDelegate {
             self.scrollView?.setContentOffset(CGPoint(x: contentViewFrame.size.width * CGFloat(index), y: 0), animated: pageAnimatable)
         }
         
+        if self.delegate != nil {
+            self.delegate?.pageController?(self, didSelesctedIndex: index, currentIndex: currentIndex)
+        }
+        currentViewController = self.displayVC[index]
         if pageAnimatable {return}
         
         if let currentViewController = self.displayVC[currentIndex] {
