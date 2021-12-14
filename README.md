@@ -22,7 +22,7 @@ pod 'SSPageController'
 
 ## Author
 
-jianglu, jianglu@99elink.com
+jianglu
 
 ## License
 

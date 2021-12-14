@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SSPageController'
-  s.version          = '0.1.0'
+  s.version          = '1.0.0'
   s.summary          = 'Modified based on WMPageController of SSPageController.'
 
 # This description is used to generate tags and improve search results.
